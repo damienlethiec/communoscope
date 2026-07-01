@@ -1,24 +1,34 @@
-# README
+# Communoscope
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Tableau de bord open data public qui évalue la gestion des communes de la
+Métropole de Lyon : un feu vert / orange / rouge par domaine (finances, eau…),
+calculé à partir d'indicateurs officiels et de seuils explicites, jamais de
+note globale ni de jugement éditorial.
 
-Things you may want to cover:
+Le design complet est documenté dans [docs/design.md](docs/design.md).
 
-* Ruby version
+## Prérequis
 
-* System dependencies
+- Ruby (version pinnée dans `.ruby-version`, gérée avec [mise](https://mise.jdx.dev))
+- SQLite 3
 
-* Configuration
+## Mise en route
 
-* Database creation
+```sh
+bin/setup
+```
 
-* Database initialization
+Installe les gems, prépare la base SQLite et charge les communes de la
+métropole (`bin/rails db:seed`, idempotent).
 
-* How to run the test suite
+## Tests
 
-* Services (job queues, cache servers, search engines, etc.)
+```sh
+bin/rails test
+```
 
-* Deployment instructions
+Lint (RuboCop, règles rails-omakase) :
 
-* ...
+```sh
+bin/rubocop
+```
