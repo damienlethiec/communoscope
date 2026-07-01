@@ -1,0 +1,292 @@
+[
+  {
+    "code": "69003",
+    "nom": "Albigny-sur-Saône",
+    "population": 3057
+  },
+  {
+    "code": "69029",
+    "nom": "Bron",
+    "population": 42982
+  },
+  {
+    "code": "69033",
+    "nom": "Cailloux-sur-Fontaines",
+    "population": 2989
+  },
+  {
+    "code": "69034",
+    "nom": "Caluire-et-Cuire",
+    "population": 43597
+  },
+  {
+    "code": "69040",
+    "nom": "Champagne-au-Mont-d'Or",
+    "population": 6311
+  },
+  {
+    "code": "69044",
+    "nom": "Charbonnières-les-Bains",
+    "population": 5383
+  },
+  {
+    "code": "69046",
+    "nom": "Charly",
+    "population": 4811
+  },
+  {
+    "code": "69063",
+    "nom": "Collonges-au-Mont-d'Or",
+    "population": 4669
+  },
+  {
+    "code": "69068",
+    "nom": "Couzon-au-Mont-d'Or",
+    "population": 2619
+  },
+  {
+    "code": "69069",
+    "nom": "Craponne",
+    "population": 12084
+  },
+  {
+    "code": "69071",
+    "nom": "Curis-au-Mont-d'Or",
+    "population": 1195
+  },
+  {
+    "code": "69072",
+    "nom": "Dardilly",
+    "population": 9221
+  },
+  {
+    "code": "69081",
+    "nom": "Écully",
+    "population": 17944
+  },
+  {
+    "code": "69085",
+    "nom": "Fleurieu-sur-Saône",
+    "population": 1597
+  },
+  {
+    "code": "69087",
+    "nom": "Fontaines-Saint-Martin",
+    "population": 3098
+  },
+  {
+    "code": "69088",
+    "nom": "Fontaines-sur-Saône",
+    "population": 6957
+  },
+  {
+    "code": "69089",
+    "nom": "Francheville",
+    "population": 15604
+  },
+  {
+    "code": "69091",
+    "nom": "Givors",
+    "population": 21379
+  },
+  {
+    "code": "69096",
+    "nom": "Grigny-sur-Rhône",
+    "population": 10030
+  },
+  {
+    "code": "69100",
+    "nom": "Irigny",
+    "population": 9034
+  },
+  {
+    "code": "69116",
+    "nom": "Limonest",
+    "population": 4012
+  },
+  {
+    "code": "69117",
+    "nom": "Lissieu",
+    "population": 3181
+  },
+  {
+    "code": "69123",
+    "nom": "Lyon",
+    "population": 519127
+  },
+  {
+    "code": "69127",
+    "nom": "Marcy-l'Étoile",
+    "population": 3778
+  },
+  {
+    "code": "69142",
+    "nom": "La Mulatière",
+    "population": 6534
+  },
+  {
+    "code": "69143",
+    "nom": "Neuville-sur-Saône",
+    "population": 7812
+  },
+  {
+    "code": "69149",
+    "nom": "Oullins-Pierre-Bénite",
+    "population": 38168
+  },
+  {
+    "code": "69153",
+    "nom": "Poleymieux-au-Mont-d'Or",
+    "population": 1412
+  },
+  {
+    "code": "69163",
+    "nom": "Quincieux",
+    "population": 3679
+  },
+  {
+    "code": "69168",
+    "nom": "Rochetaillée-sur-Saône",
+    "population": 1551
+  },
+  {
+    "code": "69191",
+    "nom": "Saint-Cyr-au-Mont-d'Or",
+    "population": 6327
+  },
+  {
+    "code": "69194",
+    "nom": "Saint-Didier-au-Mont-d'Or",
+    "population": 7435
+  },
+  {
+    "code": "69199",
+    "nom": "Saint-Fons",
+    "population": 19285
+  },
+  {
+    "code": "69202",
+    "nom": "Sainte-Foy-lès-Lyon",
+    "population": 21692
+  },
+  {
+    "code": "69204",
+    "nom": "Saint-Genis-Laval",
+    "population": 21212
+  },
+  {
+    "code": "69205",
+    "nom": "Saint-Genis-les-Ollières",
+    "population": 5439
+  },
+  {
+    "code": "69207",
+    "nom": "Saint-Germain-au-Mont-d'Or",
+    "population": 3124
+  },
+  {
+    "code": "69233",
+    "nom": "Saint-Romain-au-Mont-d'Or",
+    "population": 1247
+  },
+  {
+    "code": "69244",
+    "nom": "Tassin-la-Demi-Lune",
+    "population": 23200
+  },
+  {
+    "code": "69250",
+    "nom": "La Tour-de-Salvagny",
+    "population": 4649
+  },
+  {
+    "code": "69256",
+    "nom": "Vaulx-en-Velin",
+    "population": 53069
+  },
+  {
+    "code": "69259",
+    "nom": "Vénissieux",
+    "population": 65502
+  },
+  {
+    "code": "69260",
+    "nom": "Vernaison",
+    "population": 5210
+  },
+  {
+    "code": "69266",
+    "nom": "Villeurbanne",
+    "population": 163684
+  },
+  {
+    "code": "69271",
+    "nom": "Chassieu",
+    "population": 11208
+  },
+  {
+    "code": "69273",
+    "nom": "Corbas",
+    "population": 11315
+  },
+  {
+    "code": "69275",
+    "nom": "Décines-Charpieu",
+    "population": 29877
+  },
+  {
+    "code": "69276",
+    "nom": "Feyzin",
+    "population": 10304
+  },
+  {
+    "code": "69278",
+    "nom": "Genay",
+    "population": 5585
+  },
+  {
+    "code": "69279",
+    "nom": "Jonage",
+    "population": 6144
+  },
+  {
+    "code": "69282",
+    "nom": "Meyzieu",
+    "population": 36687
+  },
+  {
+    "code": "69283",
+    "nom": "Mions",
+    "population": 13843
+  },
+  {
+    "code": "69284",
+    "nom": "Montanay",
+    "population": 3308
+  },
+  {
+    "code": "69286",
+    "nom": "Rillieux-la-Pape",
+    "population": 31389
+  },
+  {
+    "code": "69290",
+    "nom": "Saint-Priest",
+    "population": 49229
+  },
+  {
+    "code": "69292",
+    "nom": "Sathonay-Camp",
+    "population": 7019
+  },
+  {
+    "code": "69293",
+    "nom": "Sathonay-Village",
+    "population": 2412
+  },
+  {
+    "code": "69296",
+    "nom": "Solaize",
+    "population": 3144
+  }
+]

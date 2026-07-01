@@ -1,9 +1,9 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Communes de la Métropole de Lyon (EPCI 200046977), exportées depuis
+# https://geo.api.gouv.fr/epcis/200046977/communes?fields=code,nom,population
+# et versionnées dans db/seeds/communes_metropole_lyon.json. Idempotent.
+communes = JSON.parse(Rails.root.join("db/seeds/communes_metropole_lyon.json").read)
+
+communes.each do |attributes|
+  commune = Commune.find_or_initialize_by(code_insee: attributes.fetch("code"))
+  commune.update!(nom: attributes.fetch("nom"), population: attributes.fetch("population"))
+end
