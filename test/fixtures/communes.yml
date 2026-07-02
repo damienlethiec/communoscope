@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+lyon:
+  code_insee: "69123"
+  nom: Lyon
+  population: 522250
+
+villeurbanne:
+  code_insee: "69266"
+  nom: Villeurbanne
+  population: 156928
