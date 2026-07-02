@@ -16,7 +16,8 @@ sont décrits dans `docs/design.md` — le lire avant toute feature.
 ## Build / test
 
 - Setup : `bin/setup` (bundle, db:prepare, seeds), puis lance `bin/dev`
-  (serveur + watcher Tailwind) sauf avec `--skip-server`.
+  (serveur + watcher Tailwind) sauf avec `--skip-server` ; `--reset` recrée
+  la base avant les seeds.
 - Tests : `bin/rails test` (minitest, fixtures). Système : `bin/rails test:system`.
 - Lint : `bin/rubocop` (rubocop-rails-omakase, zéro offense exigé).
 - Pipeline complet en local : `bin/ci` (défini dans `config/ci.rb` : setup,

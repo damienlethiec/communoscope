@@ -11,7 +11,7 @@ signal. Pas de jugement éditorial : des indicateurs officiels, des seuils expli
 
 ## Périmètre v1
 
-- Les communes de la **métropole de Lyon** (~59, liste par code INSEE).
+- Les communes de la **métropole de Lyon** (58 selon geo.api.gouv.fr, liste par code INSEE).
 - Deux domaines d'indicateurs : **finances communales** et **eau potable**.
 - Un **feu vert / orange / rouge par domaine et par commune**, jamais de note globale.
 - Un bandeau **« quoi de neuf »** listant les derniers changements de feux.

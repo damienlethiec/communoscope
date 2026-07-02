@@ -21,7 +21,7 @@ bin/setup
 Installe les gems, prépare la base SQLite, charge les communes de la
 métropole (`bin/rails db:seed`, idempotent) puis lance le serveur de
 développement (`bin/dev` : Rails + watcher Tailwind). Passer `--skip-server`
-pour s'arrêter avant le lancement.
+pour s'arrêter avant le lancement, `--reset` pour recréer la base.
 
 ## Tests
 
