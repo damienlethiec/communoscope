@@ -1,0 +1,42 @@
+<section id="finances" class="space-y-4">
+  <h2 class="text-lg font-semibold">Finances</h2>
+
+  <% if (feu = commune.feu("finances")) %>
+    <p class="flex items-center gap-2">
+      <%= badge_feu(feu.couleur) %>
+      <span class="text-sm text-gray-600">Exercice <%= feu.justification["annee"] %></span>
+    </p>
+
+    <ul class="space-y-4">
+      <% feu.justification["indicateurs"].each do |indicateur| %>
+        <li class="space-y-1">
+          <p class="flex items-center gap-2">
+            <%= badge_feu(indicateur["couleur"]) %>
+            <span class="font-medium"><%= indicateur["libelle"] %></span>
+          </p>
+          <dl class="grid grid-cols-2 gap-x-4 text-sm">
+            <% indicateur["valeurs"].compact.each do |cle, valeur| %>
+              <dt class="text-gray-600"><%= libelle_valeur(cle) %></dt>
+              <dd><%= valeur_feu(valeur) %></dd>
+            <% end %>
+          </dl>
+          <% indicateur["seuils"].each_value do |seuil| %>
+            <p class="text-xs text-gray-500">
+              <%= seuil["reference"] %>
+              <% if seuil["url"] %>
+                <%= link_to "Référence", seuil["url"], class: "underline" %>
+              <% end %>
+            </p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+
+    <p class="text-sm">
+      <%= link_to "Source : comptes individuels des communes (DGFiP, Licence Ouverte v2.0)",
+        feu.justification["source_url"], class: "underline" %>
+    </p>
+  <% else %>
+    <p class="text-sm text-gray-600">Données financières indisponibles.</p>
+  <% end %>
+</section>
