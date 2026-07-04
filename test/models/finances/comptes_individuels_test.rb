@@ -18,6 +18,28 @@ module Finances
         ComptesIndividuels.source_url(2022)
     end
 
+    test "csv renvoie le corps de la réponse en cas de succès HTTP" do
+      reponse = Net::HTTPOK.new("1.1", "200", "OK")
+      reponse.define_singleton_method(:body) { "an;dep;icom\n" }
+
+      corps = stub_classe(Net::HTTP, :get_response, reponse) do
+        ComptesIndividuels.csv(2023)
+      end
+
+      assert_equal "an;dep;icom\n", corps
+    end
+
+    test "csv lève une erreur explicite sur statut HTTP non 2xx" do
+      reponse = Net::HTTPTooManyRequests.new("1.1", "429", "Too Many Requests")
+
+      erreur = stub_classe(Net::HTTP, :get_response, reponse) do
+        assert_raises(ComptesIndividuels::ExportIndisponible) { ComptesIndividuels.csv(2023) }
+      end
+
+      assert_includes erreur.message, "429"
+      assert_includes erreur.message, ComptesIndividuels.export_url(2023)
+    end
+
     test "mesures transforme les lignes CSV en indicateurs par code INSEE" do
       mesures = stub_classe(ComptesIndividuels, :csv, file_fixture("finances/comptes_individuels_2023.csv").read) do
         ComptesIndividuels.mesures(2023)

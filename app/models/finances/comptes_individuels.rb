@@ -13,6 +13,8 @@ require "net/http"
 # pour le Rhône) et `icom` (3 caractères).
 module Finances
   class ComptesIndividuels
+    class ExportIndisponible < StandardError; end
+
     DATASETS = {
       2021 => "comptes-individuels-des-communes-fichier-global-2021",
       2022 => "comptes-individuels-des-communes-fichier-global-2022",
@@ -50,7 +52,13 @@ module Finances
       end
 
       def csv(annee)
-        Net::HTTP.get(URI(export_url(annee)))
+        url = export_url(annee)
+        reponse = Net::HTTP.get_response(URI(url))
+        unless reponse.is_a?(Net::HTTPSuccess)
+          raise ExportIndisponible, "HTTP #{reponse.code} sur #{url}"
+        end
+
+        reponse.body
       end
 
       def mesures(annee)
