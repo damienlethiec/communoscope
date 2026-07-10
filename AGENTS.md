@@ -86,3 +86,14 @@ ligne). Le module finances est le modèle à suivre ; un nouveau domaine
   an="2023"&select=an,dep,icom,inom,pop1,prod,perso,cont,fin,caf,dette,fdette,mdette,fcaf,mcaf`
   sur le dataset du millésime, retranscrits en CSV `;`. Aucun test ne touche
   au réseau : `Finances::ComptesIndividuels.csv` est substitué par ces fichiers.
+  L'export CSV réel d'Opendatasoft (`/exports/csv`) commence par un BOM UTF-8
+  (`EF BB BF`) : `mesures` le retire avant `CSV.parse`, sinon le premier
+  en-tête devient `﻿an` et toutes les lignes sont ignorées silencieusement.
+  Le fixture `comptes_individuels_bom_2023.csv` porte ce BOM pour couvrir le cas.
+
+## Maintaining this file
+
+Keep this file for knowledge useful to almost every future agent session in this project.
+Do not repeat what the codebase already shows; point to the authoritative file or command instead.
+Prefer rewriting or pruning existing entries over appending new ones.
+When updating this file, preserve this bar for all agents and keep entries concise.

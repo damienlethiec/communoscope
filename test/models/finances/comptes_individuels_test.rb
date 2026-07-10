@@ -60,6 +60,17 @@ module Finances
       assert_equal 216.33, lyon[:valeurs]["caf_par_habitant_strate"]
     end
 
+    test "mesures gère le BOM UTF-8 en tête de l'export Opendatasoft" do
+      mesures = stub_classe(ComptesIndividuels, :csv, file_fixture("finances/comptes_individuels_bom_2023.csv").read) do
+        ComptesIndividuels.mesures(2023)
+      end
+
+      assert_equal 4, mesures.size
+
+      lyon = mesures.find { |mesure| mesure[:code_insee] == "69123" }
+      assert_equal 778633.43, lyon[:valeurs]["produits_fonctionnement"]
+    end
+
     test "mesures ignore les lignes d'un autre exercice" do
       mesures = stub_classe(ComptesIndividuels, :csv, file_fixture("finances/comptes_individuels_2023.csv").read) do
         ComptesIndividuels.mesures(2024)
