@@ -62,7 +62,11 @@ module Finances
       end
 
       def mesures(annee)
-        CSV.parse(csv(annee), headers: true, col_sep: ";").filter_map do |ligne|
+        # L'export CSV Opendatasoft commence par un BOM UTF-8 (EF BB BF) qui,
+        # laissé en place, polluerait le premier en-tête ("an" → "﻿an").
+        corps = csv(annee).dup.force_encoding("UTF-8").delete_prefix("﻿")
+
+        CSV.parse(corps, headers: true, col_sep: ";").filter_map do |ligne|
           next unless ligne["an"].to_i == annee
 
           valeurs = INDICATEURS.filter_map do |colonne, indicateur|
