@@ -13,6 +13,9 @@
           <p class="flex items-center gap-2">
             <%= badge_feu(indicateur["couleur"]) %>
             <span class="font-medium"><%= indicateur["libelle"] %></span>
+            <% if indicateur["annee"] != feu.justification["annee"] %>
+              <span class="text-sm text-gray-600">Exercice <%= indicateur["annee"] %></span>
+            <% end %>
           </p>
           <dl class="grid grid-cols-2 gap-x-4 text-sm">
             <% indicateur["valeurs"].compact.each do |cle, valeur| %>
