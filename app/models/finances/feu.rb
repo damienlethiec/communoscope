@@ -1,7 +1,10 @@
-# Calcule le feu « finances » d'une commune à partir de ses mesures les plus
-# récentes et des seuils versionnés dans config/feux/finances.yml.
+# Calcule le feu « finances » d'une commune à partir de ses mesures et des
+# seuils versionnés dans config/feux/finances.yml. Chaque indicateur est
+# calculé sur l'exercice complet le plus récent qui le rend calculable : un
+# millésime aux colonnes manquantes ne peut donc pas améliorer le feu par
+# simple absence de donnée (repli sur l'exercice précédent).
 # Le feu du domaine est la pire couleur de ses indicateurs ; chaque feu
-# enregistre sa justification chiffrée (valeurs, seuils, source) dans
+# enregistre sa justification chiffrée (valeurs, seuils, source, année) dans
 # TrafficLight, historisé par changement.
 module Finances
   class Feu
@@ -20,7 +23,7 @@ module Finances
     end
 
     def recalculer!
-      return nil if date.nil? || indicateurs.empty?
+      return nil if indicateurs.empty?
 
       TrafficLight.enregistrer!(commune: @commune, domaine: DOMAINE, couleur:, justification:)
     end
@@ -33,17 +36,38 @@ module Finances
 
     def justification
       {
-        "annee" => date.year,
+        "annee" => annee,
         "source_url" => source_url,
         "indicateurs" => indicateurs
       }
     end
 
     def indicateurs
-      @indicateurs ||= [ endettement, autofinancement, rigidite_charges ].compact
+      @indicateurs ||= %i[endettement autofinancement rigidite_charges].filter_map do |methode|
+        exercice_calculable(methode)
+      end
     end
 
-    def endettement
+    # Cherche, du plus récent au plus ancien, le premier exercice qui rend
+    # l'indicateur calculable.
+    def exercice_calculable(methode)
+      exercices.each do |exercice|
+        resultat = send(methode, exercice)
+        return resultat if resultat
+      end
+      nil
+    end
+
+    def annee
+      indicateurs.map { |i| i["annee"] }.max
+    end
+
+    def source_url
+      exercices.find { |exercice| exercice[:annee] == annee }&.fetch(:source_url)
+    end
+
+    def endettement(exercice)
+      valeurs = exercice[:valeurs]
       dette, caf, dette_hab, strate =
         valeurs.values_at("encours_dette", "caf_brute", "dette_par_habitant", "dette_par_habitant_strate")
       return nil if [ dette, caf, dette_hab, strate ].any?(&:nil?)
@@ -66,7 +90,7 @@ module Finances
         "vert"
       end
 
-      indicateur("endettement", couleur,
+      indicateur("endettement", couleur, exercice,
         "capacite_desendettement_annees" => capacite,
         "ratio_dette_habitant_strate" => ratio_strate,
         "dette_par_habitant" => dette_hab,
@@ -75,7 +99,8 @@ module Finances
         "caf_brute" => caf)
     end
 
-    def autofinancement
+    def autofinancement(exercice)
+      valeurs = exercice[:valeurs]
       caf, prod, caf_hab, caf_strate =
         valeurs.values_at("caf_brute", "produits_fonctionnement", "caf_par_habitant", "caf_par_habitant_strate")
       return nil if caf.nil? || prod.nil? || !prod.positive?
@@ -91,7 +116,7 @@ module Finances
         "vert"
       end
 
-      indicateur("autofinancement", couleur,
+      indicateur("autofinancement", couleur, exercice,
         "taux_caf_brute_pct" => taux,
         "caf_brute" => caf,
         "produits_fonctionnement" => prod,
@@ -99,7 +124,8 @@ module Finances
         "caf_par_habitant_strate" => caf_strate)
     end
 
-    def rigidite_charges
+    def rigidite_charges(exercice)
+      valeurs = exercice[:valeurs]
       perso, cont, fin, prod =
         valeurs.values_at("charges_personnel", "contingents", "charges_financieres", "produits_fonctionnement")
       return nil if [ perso, cont, fin, prod ].any?(&:nil?) || !prod.positive?
@@ -115,7 +141,7 @@ module Finances
         "vert"
       end
 
-      indicateur("rigidite_charges", couleur,
+      indicateur("rigidite_charges", couleur, exercice,
         "rigidite_pct" => taux,
         "charges_personnel" => perso,
         "contingents" => cont,
@@ -123,11 +149,12 @@ module Finances
         "produits_fonctionnement" => prod)
     end
 
-    def indicateur(nom, couleur, valeurs)
+    def indicateur(nom, couleur, exercice, valeurs)
       config = self.class.config.dig("indicateurs", nom)
       {
         "indicateur" => nom,
         "libelle" => config.fetch("libelle"),
+        "annee" => exercice[:annee],
         "couleur" => couleur,
         "valeurs" => valeurs,
         "seuils" => config.fetch("seuils")
@@ -138,16 +165,20 @@ module Finances
       self.class.config.dig("indicateurs", nom, "seuils")
     end
 
-    def date
-      @date ||= mesures.maximum(:date)
-    end
-
-    def valeurs
-      @valeurs ||= mesures.where(date:).pluck(:indicateur, :valeur).to_h.transform_values(&:to_f)
-    end
-
-    def source_url
-      @source_url ||= mesures.where(date:).pick(:source_url)
+    # Exercices de la commune, du plus récent au plus ancien, chacun portant
+    # ses valeurs (indicateur → montant) et sa source.
+    def exercices
+      @exercices ||= mesures
+        .pluck(:date, :indicateur, :valeur, :source_url)
+        .group_by(&:first)
+        .map do |date, lignes|
+          {
+            annee: date.year,
+            source_url: lignes.first[3],
+            valeurs: lignes.to_h { |ligne| [ ligne[1], ligne[2].to_f ] }
+          }
+        end
+        .sort_by { |exercice| -exercice[:annee] }
     end
 
     def mesures

@@ -14,12 +14,21 @@ module Finances
       annees = ComptesIndividuels::ANNEES if annees.empty?
       communes = Commune.all.index_by(&:code_insee)
 
+      erreurs = {}
       annees.each do |annee|
         nombre = importe_annee(annee, communes)
         Rails.logger.info("[Finances::ImportJob] #{annee} : #{nombre} mesures importées")
+      rescue ComptesIndividuels::ExportIndisponible => e
+        erreurs[annee] = e
+        Rails.logger.error("[Finances::ImportJob] #{annee} indisponible : #{e.message}")
       end
 
       communes.each_value { |commune| Feu.recalculer!(commune) }
+
+      return if erreurs.empty?
+
+      details = erreurs.map { |annee, e| "#{annee} (#{e.message})" }.join(", ")
+      raise ComptesIndividuels::ExportIndisponible, "Millésimes indisponibles : #{details}"
     end
 
     private

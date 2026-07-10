@@ -64,6 +64,27 @@ module Finances
       assert_equal "rouge", communes(:lyon).feu("finances").couleur
     end
 
+    test "un millésime indisponible n'empêche pas les autres et lève à la fin" do
+      fichiers = fichiers_fixtures
+      csv = lambda do |annee|
+        raise ComptesIndividuels::ExportIndisponible, "HTTP 404" if annee == 2022
+
+        fichiers.fetch(annee)
+      end
+
+      erreur = assert_raises(ComptesIndividuels::ExportIndisponible) do
+        stub_classe(ComptesIndividuels, :csv, csv) do
+          ImportJob.perform_now(*ANNEES_FIXTURES)
+        end
+      end
+      assert_match(/2022/, erreur.message)
+
+      # 2 communes × 10 indicateurs × 2 exercices importés (2023, 2024)
+      assert_equal 40, Measurement.count
+      assert_empty Measurement.where(date: Date.new(2022, 12, 31))
+      assert_equal "vert", communes(:lyon).feu("finances").couleur
+    end
+
     private
 
     def importe(fichiers: fichiers_fixtures)

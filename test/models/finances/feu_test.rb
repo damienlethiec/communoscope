@@ -161,6 +161,23 @@ module Finances
       assert_equal 2023, feu.justification["annee"]
     end
 
+    test "un indicateur manquant sur le dernier exercice n'améliore pas le feu (repli)" do
+      # 2023 complet et rouge sur l'endettement, 2024 sans les colonnes de dette.
+      cree_mesures("encours_dette" => 19_500, annee: 2023)
+      cree_mesures_seulement(
+        %w[caf_brute produits_fonctionnement charges_personnel contingents
+           charges_financieres caf_par_habitant caf_par_habitant_strate],
+        annee: 2024
+      )
+
+      feu = Feu.recalculer!(@commune)
+
+      assert_equal "rouge", feu.couleur
+      assert_equal "rouge", couleur_indicateur(feu, "endettement")
+      assert_equal 2023, indicateur(feu, "endettement")["annee"]
+      assert_equal 2024, indicateur(feu, "autofinancement")["annee"]
+    end
+
     test "sans mesures, pas de feu" do
       assert_nil Feu.recalculer!(@commune)
       assert_equal 0, TrafficLight.count
@@ -170,7 +187,15 @@ module Finances
 
     def cree_mesures(valeurs = {})
       annee = valeurs.delete(:annee) || 2023
-      MESURES_VERTES.merge(valeurs).each do |indicateur, valeur|
+      cree(MESURES_VERTES.merge(valeurs), annee)
+    end
+
+    def cree_mesures_seulement(indicateurs, annee:)
+      cree(MESURES_VERTES.slice(*indicateurs), annee)
+    end
+
+    def cree(valeurs, annee)
+      valeurs.each do |indicateur, valeur|
         Measurement
           .find_or_initialize_by(commune: @commune, domaine: "finances", indicateur:, date: Date.new(annee, 12, 31))
           .update!(valeur:, source_url: "https://www.data.gouv.fr/datasets/comptes-individuels-des-communes-fichier-global-2023-2024")
