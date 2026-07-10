@@ -22,8 +22,26 @@ module FeuxHelper
     "charges_financieres" => "Charges financières (k€)"
   }.freeze
 
+  # État neutre inclus : classes, icône et libellé quand la couleur est absente.
+  NEUTRE = { classes: "bg-gray-100 text-gray-600", icone: "–", libelle: "Non calculé" }.freeze
+
+  ICONES = { "vert" => "✓", "orange" => "!", "rouge" => "✕" }.freeze
+
   def badge_feu(couleur)
     tag.span(couleur, class: "inline-block rounded-full px-2 py-0.5 text-xs font-semibold uppercase #{BADGES.fetch(couleur)}")
+  end
+
+  # Indicateur de feu pour une carte, robuste au feu nil. L'état est porté par
+  # l'icône et le libellé (pas seulement la couleur) pour l'accessibilité.
+  def badge_feu_carte(feu)
+    couleur = feu&.couleur
+    classes = couleur ? BADGES.fetch(couleur) : NEUTRE[:classes]
+    icone = couleur ? ICONES.fetch(couleur) : NEUTRE[:icone]
+    libelle = couleur ? couleur.capitalize : NEUTRE[:libelle]
+
+    tag.span(class: "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold #{classes}") do
+      safe_join([ tag.span(icone, "aria-hidden": true), libelle ], " ")
+    end
   end
 
   def libelle_valeur(cle)
