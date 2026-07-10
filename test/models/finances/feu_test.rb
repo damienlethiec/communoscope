@@ -127,6 +127,7 @@ module Finances
 
       endettement = indicateur(feu, "endettement")
       assert_equal "Endettement", endettement["libelle"]
+      assert_match %r{\Ahttps://}, endettement["source_url"]
       assert_equal 4.0, endettement["valeurs"]["capacite_desendettement_annees"]
       assert_equal 12.0, endettement.dig("seuils", "capacite_desendettement_annees", "rouge_au_dela_de")
       assert_match(/loi n° 2018-32/, endettement.dig("seuils", "capacite_desendettement_annees", "reference"))
@@ -176,6 +177,8 @@ module Finances
       assert_equal "rouge", couleur_indicateur(feu, "endettement")
       assert_equal 2023, indicateur(feu, "endettement")["annee"]
       assert_equal 2024, indicateur(feu, "autofinancement")["annee"]
+      assert_equal source_url(2023), indicateur(feu, "endettement")["source_url"]
+      assert_equal source_url(2024), indicateur(feu, "autofinancement")["source_url"]
     end
 
     test "sans mesures, pas de feu" do
@@ -198,8 +201,12 @@ module Finances
       valeurs.each do |indicateur, valeur|
         Measurement
           .find_or_initialize_by(commune: @commune, domaine: "finances", indicateur:, date: Date.new(annee, 12, 31))
-          .update!(valeur:, source_url: "https://www.data.gouv.fr/datasets/comptes-individuels-des-communes-fichier-global-2023-2024")
+          .update!(valeur:, source_url: source_url(annee))
       end
+    end
+
+    def source_url(annee)
+      "https://www.data.gouv.fr/datasets/comptes-individuels-des-communes-fichier-global-#{annee}"
     end
 
     def indicateur(feu, nom)

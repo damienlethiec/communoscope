@@ -55,6 +55,19 @@ module Finances
       assert_includes rendered, "Exercice 2023"
     end
 
+    test "cite le millésime réel d'un indicateur en repli quand sa source diffère de l'en-tête" do
+      commune = communes(:lyon)
+      cree_mesures(commune, date: Date.new(2023, 12, 31),
+        source_url: "https://www.data.gouv.fr/datasets/comptes-individuels-des-communes-fichier-global-2021")
+      cree_mesures(commune, MESURES.except("encours_dette"), remplace: true)
+      Feu.recalculer!(commune)
+
+      render partial: "finances/fiche_section", locals: { commune: }
+
+      assert_includes rendered, "comptes-individuels-des-communes-fichier-global-2021"
+      assert_includes rendered, "Source de l&#39;exercice 2023"
+    end
+
     test "signale l'absence de données sans feu calculé" do
       render partial: "finances/fiche_section", locals: { commune: communes(:lyon) }
 
@@ -63,12 +76,12 @@ module Finances
 
     private
 
-    def cree_mesures(commune, valeurs = {}, date: Date.new(2024, 12, 31), remplace: false)
+    def cree_mesures(commune, valeurs = {}, date: Date.new(2024, 12, 31), remplace: false,
+      source_url: "https://www.data.gouv.fr/datasets/comptes-individuels-des-communes-fichier-global-2023-2024")
       mesures = remplace ? valeurs : MESURES.merge(valeurs)
       mesures.each do |indicateur, valeur|
         commune.measurements.create!(
-          domaine: "finances", indicateur:, valeur:, date:,
-          source_url: "https://www.data.gouv.fr/datasets/comptes-individuels-des-communes-fichier-global-2023-2024"
+          domaine: "finances", indicateur:, valeur:, date:, source_url:
         )
       end
     end

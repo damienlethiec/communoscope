@@ -31,6 +31,11 @@
               <% end %>
             </p>
           <% end %>
+          <% if indicateur["source_url"] != feu.justification["source_url"] %>
+            <p class="text-xs text-gray-500">
+              <%= link_to "Source de l'exercice #{indicateur["annee"]}", indicateur["source_url"], class: "underline" %>
+            </p>
+          <% end %>
         </li>
       <% end %>
     </ul>

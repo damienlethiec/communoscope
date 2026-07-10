@@ -155,6 +155,7 @@ module Finances
         "indicateur" => nom,
         "libelle" => config.fetch("libelle"),
         "annee" => exercice[:annee],
+        "source_url" => exercice[:source_url],
         "couleur" => couleur,
         "valeurs" => valeurs,
         "seuils" => config.fetch("seuils")
