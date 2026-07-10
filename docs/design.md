@@ -48,8 +48,9 @@ Ajouter un domaine (air, achats, sols…) = ajouter un module, sans toucher au r
 
 ## Ingestion
 
-- **Finances** : comptes individuels des communes (DGFiP, data.gouv.fr, fichier annuel).
-  Import annuel + backfill de quelques années pour les tendances.
+- **Finances** : comptes individuels des communes (DGFiP, data.gouv.fr, un fichier
+  annuel par millésime). Réimport mensuel idempotent (pour récupérer les corrections
+  et les nouveaux millésimes) + backfill de plusieurs années pour les tendances.
 - **Eau potable** : API Hub'Eau « qualité de l'eau potable » (SISE-Eaux). Rafraîchissement
   hebdomadaire.
 - Jobs Solid Queue récurrents, idempotents, rejouables sans dégât, avec journal d'exécution.

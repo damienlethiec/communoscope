@@ -10,6 +10,17 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
-    # Add more helper methods to be used by all tests here...
+    # Substitue une méthode de classe le temps d'un bloc (minitest 6
+    # n'embarque plus minitest/mock). `substitut` : valeur ou callable.
+    def stub_classe(classe, methode, substitut)
+      original = classe.method(methode)
+      remplacement = substitut.respond_to?(:call) ? substitut : ->(*) { substitut }
+      classe.singleton_class.silence_redefinition_of_method(methode)
+      classe.define_singleton_method(methode) { |*args| remplacement.call(*args) }
+      yield
+    ensure
+      classe.singleton_class.silence_redefinition_of_method(methode)
+      classe.define_singleton_method(methode, original)
+    end
   end
 end

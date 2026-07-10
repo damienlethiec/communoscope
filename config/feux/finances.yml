@@ -1,0 +1,67 @@
+# Seuils des feux du domaine « finances communales » : versionnés et relus en
+# PR, jamais de boîte noire (docs/design.md, § Feux et seuils).
+#
+# Données d'entrée : comptes individuels des communes (DGFiP, data.gouv.fr).
+# Montants en milliers d'euros ; « strate » = moyenne de la strate démographique
+# publiée par la DGFiP dans le même fichier, en euros par habitant.
+#
+# Logique : vert = dans les clous ; orange = premier seuil dépassé ;
+# rouge = zone d'alerte reconnue. Le feu du domaine est la pire couleur
+# de ses indicateurs.
+version: 1
+domaine: finances
+indicateurs:
+  endettement:
+    libelle: Endettement
+    seuils:
+      capacite_desendettement_annees:
+        orange_au_dela_de: 8.0
+        rouge_au_dela_de: 12.0
+        unite: années
+        reference: >-
+          Capacité de désendettement = encours de dette / CAF brute.
+          Rouge au-delà de 12 ans : plafond national de référence pour les
+          communes et EPCI fixé par l'article 29 de la loi n° 2018-32 du
+          22 janvier 2018 de programmation des finances publiques 2018-2022.
+          Orange au-delà de 8 ans : seuil de vigilance usuel en analyse
+          financière locale (zone 8-12 ans), retenu par Communoscope.
+          CAF nulle ou négative avec une dette non nulle = rouge (désendettement
+          impossible sur l'exercice).
+        url: https://www.legifrance.gouv.fr/jorf/article_jo/JORFARTI000036526081
+      ratio_dette_habitant_strate:
+        orange_au_dela_de: 1.2
+        unite: ratio commune / moyenne de la strate
+        reference: >-
+          Dette par habitant comparée à la moyenne de la strate démographique
+          publiée par la DGFiP dans les comptes individuels des communes.
+          Orange au-delà de 1,2 (20 % au-dessus de la strate) : marge
+          explicite retenue par Communoscope, relue en PR.
+        url: https://www.data.gouv.fr/datasets/comptes-individuels-des-communes-fichier-global-2023-2024
+  autofinancement:
+    libelle: Capacité d'autofinancement
+    seuils:
+      taux_caf_brute_pct:
+        orange_en_dessous_de: 12.0
+        rouge_en_dessous_de: 8.0
+        unite: "% des produits de fonctionnement"
+        reference: >-
+          Taux d'épargne brute = CAF brute / produits de fonctionnement.
+          Rouge en dessous de 8 % : seuil d'alerte communément retenu par les
+          juridictions financières (Cour des comptes, rapports annuels sur les
+          finances publiques locales) et le réseau d'alerte des finances
+          locales. Orange en dessous de 12 % : marge de vigilance retenue par
+          Communoscope.
+  rigidite_charges:
+    libelle: Rigidité des charges
+    seuils:
+      rigidite_pct:
+        orange_au_dela_de: 55.0
+        rouge_au_dela_de: 65.0
+        unite: "% des produits de fonctionnement"
+        reference: >-
+          Rigidité des charges structurelles = (charges de personnel +
+          contingents + charges financières) / produits de fonctionnement.
+          Ratio du réseau d'alerte des finances locales (DGFiP/DGCL), dont les
+          seuils historiques par strate s'échelonnent d'environ 52 % à 65 %.
+          Communoscope retient 55 % (vigilance) et 65 % (alerte) pour toutes
+          les strates.
