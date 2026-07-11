@@ -93,6 +93,29 @@ suivre ; un nouveau domaine
   (`EF BB BF`) : `mesures` le retire avant `CSV.parse`, sinon le premier
   en-tête devient `﻿an` et toutes les lignes sont ignorées silencieusement.
   Le fixture `comptes_individuels_bom_2023.csv` porte ce BOM pour couvrir le cas.
+- Eau potable : API Hub'Eau « qualité de l'eau potable » (contrôle sanitaire
+  SISE-Eaux des ARS), Licence Ouverte 2.0. Endpoint
+  `/api/v1/qualite_eau_potable/resultats_dis`, filtré par `code_commune` (INSEE)
+  et `date_min_prelevement`, pagination suivie via `next`. L'API rend une ligne
+  par analyse (paramètre) ; les champs de conformité (`conformite_limites_bact_
+  prelevement`, `..._pc_prelevement`, `conformite_references_bact/pc_prelevement`,
+  « C »/« N ») sont au niveau du prélèvement, donc `Eau::QualiteEauPotable.
+  prelevements` dédoublonne par `code_prelevement`. Chaque prélèvement produit
+  jusqu'à 3 `measurements` (`indicateur` = `"<type>:<code_prelevement>"`,
+  `valeur` 1 conforme / 0 non conforme) : `microbiologique`, `physicochimique`,
+  `references_qualite`. Le feu (`Eau::Feu`) compte les non-conformités sur les
+  12 mois précédant le prélèvement le plus récent (fenêtre ancrée sur la donnée,
+  pas sur la date du jour, pour rester idempotent). Import production :
+  `bin/rails eau:import` (toutes les communes) ou
+  `Eau::ImportJob.perform_later("69123")` ; relance hebdomadaire dans
+  `config/recurring.yml`. Seuils sourcés dans `config/feux/eau.yml` (arrêté du
+  11 janvier 2007, CSP R.1321-2/3).
+- Fixtures eau (`test/fixtures/files/eau/*.json`) : extraits réels de la réponse
+  `/resultats_dis` (mêmes clés que l'API), réduits à quelques prélèvements et
+  ajustés pour couvrir vert/orange/rouge. Aucun test ne touche au réseau :
+  `Eau::QualiteEauPotable.resultats` (frontière HTTP) est substitué par ces
+  fichiers. Pour rafraîchir un extrait : appeler l'endpoint avec `fields=` +
+  `code_commune=` sur la commune voulue et retranscrire le tableau `data`.
 
 ## Maintaining this file
 

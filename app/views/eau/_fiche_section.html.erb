@@ -1,0 +1,45 @@
+<section id="eau" class="space-y-4">
+  <h2 class="text-lg font-semibold">Eau potable</h2>
+
+  <% if (feu = commune.feu("eau")) %>
+    <p class="flex items-center gap-2">
+      <%= badge_feu(feu.couleur) %>
+      <span class="text-sm text-gray-600">
+        Prélèvements du <%= feu.justification["periode_debut"] %>
+        au <%= feu.justification["periode_fin"] %>
+      </span>
+    </p>
+
+    <ul class="space-y-4">
+      <% feu.justification["indicateurs"].each do |indicateur| %>
+        <li class="space-y-1">
+          <p class="flex items-center gap-2">
+            <%= badge_feu(indicateur["couleur"]) %>
+            <span class="font-medium"><%= indicateur["libelle"] %></span>
+          </p>
+          <dl class="grid grid-cols-2 gap-x-4 text-sm">
+            <% indicateur["valeurs"].each do |cle, valeur| %>
+              <dt class="text-gray-600"><%= libelle_valeur(cle) %></dt>
+              <dd><%= valeur_feu(valeur) %></dd>
+            <% end %>
+          </dl>
+          <% indicateur["seuils"].each_value do |seuil| %>
+            <p class="text-xs text-gray-500">
+              <%= seuil["reference"] %>
+              <% if seuil["url"] %>
+                <%= link_to "Référence", seuil["url"], class: "underline" %>
+              <% end %>
+            </p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+
+    <p class="text-sm">
+      <%= link_to "Source : contrôle sanitaire de l'eau potable (SISE-Eaux, Hub'Eau, Licence Ouverte 2.0)",
+        feu.justification["source_url"], class: "underline" %>
+    </p>
+  <% else %>
+    <p class="text-sm text-gray-600">Données sur l'eau potable indisponibles.</p>
+  <% end %>
+</section>

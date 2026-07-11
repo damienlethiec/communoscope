@@ -1,0 +1,63 @@
+# Seuils des feux du domaine « eau potable » : versionnés et relus en PR,
+# jamais de boîte noire (docs/design.md, § Feux et seuils).
+#
+# Données d'entrée : contrôle sanitaire de l'eau distribuée (SISE-Eaux, ARS /
+# Ministère de la Santé), exposé par l'API Hub'Eau « qualité de l'eau potable ».
+# Base de calcul : les prélèvements des 12 derniers mois de la commune, classés
+# par leur conformité au niveau du prélèvement (conforme « C » / non conforme
+# « N ») telle que publiée par l'ARS.
+#
+# Logique : vert = conforme ; orange = non-conformité(s) ponctuelle(s) sans
+# restriction d'usage ; rouge = non-conformité récurrente (au sens sanitaire,
+# pouvant entraîner une restriction d'usage prononcée par l'ARS). Le feu du
+# domaine est la pire couleur de ses indicateurs. Une non-conformité aux
+# « références de qualité » (paramètres indicateurs, sans risque sanitaire
+# direct) ne déclenche jamais de rouge.
+version: 1
+domaine: eau
+indicateurs:
+  microbiologique:
+    libelle: Conformité microbiologique
+    seuils:
+      non_conformites_12_mois:
+        orange_a_partir_de: 1
+        rouge_a_partir_de: 2
+        unite: prélèvements non conformes sur 12 mois
+        reference: >-
+          Limites de qualité microbiologiques (Escherichia coli et entérocoques :
+          0 par 100 mL) fixées à l'annexe I de l'arrêté du 11 janvier 2007 relatif
+          aux limites et références de qualité des eaux destinées à la consommation
+          humaine, pris pour l'application des articles R. 1321-2 et R. 1321-3 du
+          code de la santé publique. Un dépassement traduit un risque sanitaire :
+          une seule non-conformité = orange (événement ponctuel) ; à partir de deux
+          non-conformités sur 12 mois = rouge (récurrence, pouvant justifier une
+          restriction d'usage prononcée par l'ARS).
+        url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000000465574
+  physicochimique:
+    libelle: Conformité physico-chimique
+    seuils:
+      non_conformites_12_mois:
+        orange_a_partir_de: 1
+        rouge_a_partir_de: 2
+        unite: prélèvements non conformes sur 12 mois
+        reference: >-
+          Limites de qualité physico-chimiques (nitrates, pesticides, plomb,
+          arsenic, etc.) fixées à l'annexe I de l'arrêté du 11 janvier 2007
+          (articles R. 1321-2 et R. 1321-3 du code de la santé publique). Un
+          dépassement traduit un risque sanitaire : une seule non-conformité =
+          orange ; à partir de deux sur 12 mois = rouge (récurrence, pouvant
+          justifier une restriction d'usage).
+        url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000000465574
+  references_qualite:
+    libelle: Références de qualité
+    seuils:
+      non_conformites_12_mois:
+        orange_a_partir_de: 1
+        unite: prélèvements non conformes sur 12 mois
+        reference: >-
+          Références de qualité (paramètres indicateurs : équilibre calco-carbonique,
+          fer, chlorures, aspect, etc.) définies à l'annexe I de l'arrêté du 11
+          janvier 2007. Ce sont des repères de bon fonctionnement, sans risque
+          sanitaire direct : un dépassement n'entraîne pas de restriction d'usage
+          et ne déclenche donc jamais de rouge, seulement un orange de vigilance.
+        url: https://www.legifrance.gouv.fr/loda/id/JORFTEXT000000465574

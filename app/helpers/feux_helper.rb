@@ -19,7 +19,9 @@ module FeuxHelper
     "rigidite_pct" => "Rigidité des charges (%)",
     "charges_personnel" => "Charges de personnel (k€)",
     "contingents" => "Contingents (k€)",
-    "charges_financieres" => "Charges financières (k€)"
+    "charges_financieres" => "Charges financières (k€)",
+    "prelevements_evalues" => "Prélèvements évalués (12 mois)",
+    "prelevements_non_conformes" => "Prélèvements non conformes"
   }.freeze
 
   # État neutre inclus : classes, icône et libellé quand la couleur est absente.

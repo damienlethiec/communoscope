@@ -1,0 +1,16 @@
+{
+  "count": 2,
+  "next": "https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?code_commune=69123&page=2&size=1",
+  "api_version": "v1",
+  "data": [
+    {
+      "code_commune": "69123",
+      "code_prelevement": "06900175457",
+      "date_prelevement": "2026-03-10T09:30:00Z",
+      "conformite_limites_bact_prelevement": "C",
+      "conformite_limites_pc_prelevement": "C",
+      "conformite_references_bact_prelevement": "C",
+      "conformite_references_pc_prelevement": "C"
+    }
+  ]
+}

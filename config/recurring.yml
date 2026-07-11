@@ -20,3 +20,10 @@ production:
     class: Finances::ImportJob
     queue: default
     schedule: "0 5 3 * *"
+
+  # Contrôle sanitaire eau potable (Hub'Eau) : rafraîchissement hebdomadaire
+  # idempotent (nouvelles analyses publiées en continu par les ARS).
+  eau_import:
+    class: Eau::ImportJob
+    queue: default
+    schedule: "0 4 * * 1"
