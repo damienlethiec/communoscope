@@ -16,8 +16,9 @@
     </div>
   </header>
 
-  <%= render "finances/fiche_section", commune: @commune %>
-  <%= render "eau/fiche_section", commune: @commune %>
+  <% CommunesController::DOMAINES.each do |domaine| %>
+    <%= render "#{domaine}/fiche_section", commune: @commune %>
+  <% end %>
 
   <section id="historique" class="space-y-4">
     <h2 class="text-lg font-semibold">Historique des feux</h2>
