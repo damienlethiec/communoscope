@@ -45,7 +45,10 @@ datées, append-only, index unique commune × domaine × indicateur × date,
 réimport idempotent par upsert) et `traffic_lights` (feu historisé : une ligne
 par changement via `TrafficLight.enregistrer!`, qui ne crée rien si couleur et
 justification sont inchangées ; `commune.feu("domaine")` rend la dernière
-ligne). Le module finances est le modèle à suivre ; un nouveau domaine
+ligne ; `TrafficLight.derniers_par_commune(domaine:)` rend le dernier feu de
+chaque commune en une requête, indexé par `commune_id`, pour les vues liste
+sans N+1, ex. l'accueil `communes#index`). Le module finances est le modèle à
+suivre ; un nouveau domaine
 (ex. eau) ajoute, sans toucher au reste :
 
 1. **Source** : `app/models/<domaine>/...` documentant jeu de données, URL,
