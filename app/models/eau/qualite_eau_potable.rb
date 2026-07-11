@@ -1,6 +1,7 @@
 require "date"
 require "json"
 require "net/http"
+require "openssl"
 
 # Source du module eau potable : API Hub'Eau « qualité de l'eau potable »
 # (https://hubeau.eaufrance.fr/page/api-qualite-eau-potable), qui expose les
@@ -32,7 +33,7 @@ module Eau
     # ImportJob couvre aussi les incidents réseau et les réponses malformées.
     ERREURS_FRONTIERE = [
       Net::OpenTimeout, Net::ReadTimeout, IOError, SocketError, SystemCallError,
-      JSON::ParserError, KeyError, Date::Error
+      OpenSSL::SSL::SSLError, JSON::ParserError, KeyError, Date::Error
     ].freeze
 
     # Champs demandés à l'API (limite le volume : on n'a besoin que de
