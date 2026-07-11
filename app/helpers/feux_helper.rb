@@ -29,17 +29,30 @@ module FeuxHelper
 
   ICONES = { "vert" => "✓", "orange" => "!", "rouge" => "✕" }.freeze
 
+  # Libellé sémantique du feu : jamais transmis par la seule couleur (RGAA).
+  LIBELLES_COULEURS = { "vert" => "Conforme", "orange" => "Vigilance", "rouge" => "Alerte" }.freeze
+
+  LIBELLES_DOMAINES = { "finances" => "Finances", "eau" => "Eau potable" }.freeze
+
+  def libelle_couleur(couleur)
+    LIBELLES_COULEURS.fetch(couleur, NEUTRE[:libelle])
+  end
+
+  def libelle_domaine(domaine)
+    LIBELLES_DOMAINES.fetch(domaine, domaine.humanize)
+  end
+
   def badge_feu(couleur)
     tag.span(couleur, class: "inline-block rounded-full px-2 py-0.5 text-xs font-semibold uppercase #{BADGES.fetch(couleur)}")
   end
 
   # Indicateur de feu pour une carte, robuste au feu nil. L'état est porté par
-  # l'icône et le libellé (pas seulement la couleur) pour l'accessibilité.
+  # l'icône et le libellé sémantique (pas la seule couleur) pour l'accessibilité.
   def badge_feu_carte(feu)
-    couleur = feu&.couleur
+    couleur = feu.respond_to?(:couleur) ? feu&.couleur : feu
     classes = couleur ? BADGES.fetch(couleur) : NEUTRE[:classes]
     icone = couleur ? ICONES.fetch(couleur) : NEUTRE[:icone]
-    libelle = couleur ? couleur.capitalize : NEUTRE[:libelle]
+    libelle = couleur ? libelle_couleur(couleur) : NEUTRE[:libelle]
 
     tag.span(class: "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold #{classes}") do
       safe_join([ tag.span(icone, "aria-hidden": true), libelle ], " ")
