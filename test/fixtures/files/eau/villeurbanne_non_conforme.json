@@ -1,0 +1,43 @@
+{
+  "count": 4,
+  "next": null,
+  "api_version": "v1",
+  "data": [
+    {
+      "code_commune": "69266",
+      "nom_commune": "VILLEURBANNE",
+      "code_prelevement": "06900170011",
+      "libelle_parametre": "Escherichia coli",
+      "date_prelevement": "2025-11-15T08:20:00Z",
+      "conclusion_conformite_prelevement": "Eau d'alimentation non-conforme aux exigences de qualité.",
+      "conformite_limites_bact_prelevement": "N",
+      "conformite_limites_pc_prelevement": "C",
+      "conformite_references_bact_prelevement": "N",
+      "conformite_references_pc_prelevement": "C"
+    },
+    {
+      "code_commune": "69266",
+      "nom_commune": "VILLEURBANNE",
+      "code_prelevement": "06900172233",
+      "libelle_parametre": "Entérocoques",
+      "date_prelevement": "2026-02-01T10:00:00Z",
+      "conclusion_conformite_prelevement": "Eau d'alimentation non-conforme aux exigences de qualité.",
+      "conformite_limites_bact_prelevement": "N",
+      "conformite_limites_pc_prelevement": "C",
+      "conformite_references_bact_prelevement": "C",
+      "conformite_references_pc_prelevement": "C"
+    },
+    {
+      "code_commune": "69266",
+      "nom_commune": "VILLEURBANNE",
+      "code_prelevement": "06900174455",
+      "libelle_parametre": "Escherichia coli",
+      "date_prelevement": "2026-04-01T09:15:00Z",
+      "conclusion_conformite_prelevement": "Eau d'alimentation conforme aux exigences de qualité en vigueur pour l'ensemble des paramètres mesurés.",
+      "conformite_limites_bact_prelevement": "C",
+      "conformite_limites_pc_prelevement": "C",
+      "conformite_references_bact_prelevement": "C",
+      "conformite_references_pc_prelevement": "C"
+    }
+  ]
+}

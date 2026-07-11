@@ -1,0 +1,16 @@
+{
+  "count": 2,
+  "next": null,
+  "api_version": "v1",
+  "data": [
+    {
+      "code_commune": "69123",
+      "code_prelevement": "06900168002",
+      "date_prelevement": "2025-09-05T14:05:00Z",
+      "conformite_limites_bact_prelevement": "C",
+      "conformite_limites_pc_prelevement": "C",
+      "conformite_references_bact_prelevement": "C",
+      "conformite_references_pc_prelevement": "C"
+    }
+  ]
+}
