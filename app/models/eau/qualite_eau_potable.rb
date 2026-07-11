@@ -1,3 +1,4 @@
+require "date"
 require "json"
 require "net/http"
 
@@ -20,8 +21,19 @@ module Eau
     class AnalysesIndisponibles < StandardError; end
 
     API_BASE = "https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis"
+    # Page de documentation lisible de l'API, affichée comme lien « Source » de la
+    # fiche (l'endpoint JSON n'est pas destiné aux visiteurs).
+    DOC_URL = "https://hubeau.eaufrance.fr/page/api-qualite-eau-potable"
     LICENCE = "Licence Ouverte / Open Licence Etalab 2.0"
     TAILLE_PAGE = 5_000
+
+    # Toute défaillance de la frontière HTTP/JSON/parse est remontée en
+    # AnalysesIndisponibles, pour que l'isolation d'erreur par commune de
+    # ImportJob couvre aussi les incidents réseau et les réponses malformées.
+    ERREURS_FRONTIERE = [
+      Net::OpenTimeout, Net::ReadTimeout, IOError, SocketError, SystemCallError,
+      JSON::ParserError, KeyError, Date::Error
+    ].freeze
 
     # Champs demandés à l'API (limite le volume : on n'a besoin que de
     # l'identité du prélèvement et de ses conformités).
@@ -32,8 +44,8 @@ module Eau
     ].freeze
 
     class << self
-      def source_url(code_insee)
-        "#{API_BASE}?code_commune=#{code_insee}"
+      def source_url
+        DOC_URL
       end
 
       def resultats_url(code_insee, date_min)
@@ -56,6 +68,8 @@ module Eau
           url = page["next"]
         end
         lignes
+      rescue *ERREURS_FRONTIERE => e
+        raise AnalysesIndisponibles, "#{e.class} sur #{url} : #{e.message}"
       end
 
       # Un enregistrement par prélèvement (dédoublonné sur `code_prelevement`),
@@ -79,6 +93,8 @@ module Eau
           }
         end
         vus.values
+      rescue *ERREURS_FRONTIERE => e
+        raise AnalysesIndisponibles, "#{e.class} pour la commune #{code_insee} : #{e.message}"
       end
 
       private

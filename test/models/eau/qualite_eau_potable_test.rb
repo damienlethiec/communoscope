@@ -11,9 +11,9 @@ module Eau
       assert_includes url, "conformite_limites_bact_prelevement"
     end
 
-    test "source_url pointe vers la ressource Hub'Eau de la commune" do
-      assert_equal "https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?code_commune=69123",
-        QualiteEauPotable.source_url("69123")
+    test "source_url pointe vers la page de documentation Hub'Eau lisible" do
+      assert_equal "https://hubeau.eaufrance.fr/page/api-qualite-eau-potable",
+        QualiteEauPotable.source_url
     end
 
     test "resultats suit la pagination et concatène les pages" do
@@ -43,6 +43,30 @@ module Eau
       end
 
       assert_includes erreur.message, "429"
+    end
+
+    test "resultats convertit une erreur réseau en AnalysesIndisponibles" do
+      reponse = ->(_uri) { raise SocketError, "getaddrinfo: nodename nor servname provided" }
+
+      stub_classe(Net::HTTP, :get_response, reponse) do
+        assert_raises(QualiteEauPotable::AnalysesIndisponibles) do
+          QualiteEauPotable.resultats("69123", "2025-01-01")
+        end
+      end
+    end
+
+    test "resultats convertit une réponse JSON invalide en AnalysesIndisponibles" do
+      reponse = lambda do |_uri|
+        r = Net::HTTPOK.new("1.1", "200", "OK")
+        r.define_singleton_method(:body) { "<html>maintenance</html>" }
+        r
+      end
+
+      stub_classe(Net::HTTP, :get_response, reponse) do
+        assert_raises(QualiteEauPotable::AnalysesIndisponibles) do
+          QualiteEauPotable.resultats("69123", "2025-01-01")
+        end
+      end
     end
 
     test "prelevements dédoublonne par code_prelevement et mappe les conformités" do

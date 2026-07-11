@@ -12,7 +12,7 @@ module Eau
       mesure = communes(:lyon).measurements.find_by(indicateur: "microbiologique:06900175457")
       assert_equal 1.0, mesure.valeur.to_f
       assert_equal Date.new(2026, 3, 10), mesure.date
-      assert_equal QualiteEauPotable.source_url("69123"), mesure.source_url
+      assert_equal QualiteEauPotable.source_url, mesure.source_url
     end
 
     test "rejouer l'import sur les mêmes données ne crée aucun doublon" do

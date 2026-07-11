@@ -40,7 +40,7 @@ module Eau
       conformites.each do |type, conforme|
         commune.measurements.create!(
           domaine: "eau", indicateur: "#{type}:#{code}", valeur: conforme ? 1 : 0, date:,
-          source_url: "https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?code_commune=69123"
+          source_url: "https://hubeau.eaufrance.fr/page/api-qualite-eau-potable"
         )
       end
     end

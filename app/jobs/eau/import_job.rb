@@ -40,7 +40,7 @@ module Eau
     private
 
     def importe_commune(commune, date_min)
-      source_url = QualiteEauPotable.source_url(commune.code_insee)
+      source_url = QualiteEauPotable.source_url
 
       lignes = QualiteEauPotable.prelevements(commune.code_insee, date_min).flat_map do |prelevement|
         prelevement[:conformites].filter_map do |type, conforme|
