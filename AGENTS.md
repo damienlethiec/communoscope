@@ -65,6 +65,28 @@ suivre ; un nouveau domaine
 4. **Fiche** : partial `app/views/<domaine>/_fiche_section.html.erb`
    (local `commune:`) rendant le feu et son explication.
 
+## UI transverse (accueil + fiche)
+
+`CommunesController::DOMAINES` (`%w[finances eau]`) est la liste des domaines
+affichés : ajouter un domaine à cette constante le fait apparaître partout
+(cartes de l'accueil, fiche, filtre « domaine ») sans autre changement de vue.
+`libelle_domaine`/`libelle_couleur` (FeuxHelper) portent les libellés.
+
+- **Accueil** (`communes#index`) : grille de cartes montrant les deux feux par
+  commune. Feux préchargés par domaine via `TrafficLight.derniers_par_commune`
+  (une requête par domaine, jamais un `feu()` par carte). Filtres couleur +
+  domaine et recherche par nom, tous en query params (`?couleur=&domaine=&q=`),
+  filtrage en Ruby sur les ~59 communes (recherche insensible aux accents via
+  `I18n.transliterate`). Partial de carte : `communes/_carte.html.erb`.
+- **Fiche** (`communes#show`, route `/communes/:code_insee`) : réutilise les
+  partials `_fiche_section` de chaque domaine + historique des `traffic_lights`
+  (`@commune.traffic_lights.order(id: :desc)`, du plus récent au plus ancien).
+- **Accessibilité (RGAA)** : le feu n'est jamais porté par la seule couleur.
+  `badge_feu_carte` (accepte un `TrafficLight` ou une couleur, robuste à `nil`
+  → état « Non calculé ») rend icône + libellé sémantique
+  (vert/orange/rouge = Conforme/Vigilance/Alerte). Labels de formulaire pour
+  filtres et recherche.
+
 ## Données
 
 - `db/seeds/communes_metropole_lyon.json` : liste versionnée des 58 communes

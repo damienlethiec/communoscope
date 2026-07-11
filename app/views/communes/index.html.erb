@@ -1,47 +1,59 @@
-<% content_for :title, "Communoscope — feux finances des communes" %>
+<% content_for :title, "Communoscope — feux des communes de la Métropole de Lyon" %>
 
 <div class="w-full space-y-8">
   <header class="space-y-1">
     <h1 class="text-2xl font-bold">Communoscope</h1>
     <p class="text-sm text-gray-600">
-      Feux finances des communes de la Métropole de Lyon, indicateurs officiels sourcés.
+      Feux finances et eau potable des communes de la Métropole de Lyon,
+      indicateurs officiels sourcés.
     </p>
   </header>
 
-  <ul role="list" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    <% @communes.each do |commune| %>
-      <% feu = @feux_finances[commune.id] %>
-      <li data-commune="<%= commune.id %>"
-          class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm space-y-3">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <h2 data-nom class="font-semibold"><%= commune.nom %></h2>
-            <% if commune.population %>
-              <p class="text-sm text-gray-500">
-                <%= number_with_delimiter(commune.population, delimiter: " ") %> habitants
-              </p>
-            <% end %>
-          </div>
-          <%= badge_feu_carte(feu) %>
-        </div>
+  <%= form_with url: root_path, method: :get, class: "rounded-lg border border-gray-200 bg-gray-50 p-4" do |form| %>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
+      <div class="space-y-1">
+        <%= form.label :q, "Rechercher une commune", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.search_field :q, value: @recherche, placeholder: "Nom de commune",
+              class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
 
-        <% if feu %>
-          <div class="space-y-2 text-sm">
-            <p class="text-gray-600">Exercice <%= feu.justification["annee"] %></p>
-            <ul class="flex flex-wrap gap-x-3 gap-y-1">
-              <% feu.justification["indicateurs"].each do |indicateur| %>
-                <li class="flex items-center gap-1.5">
-                  <span aria-hidden="true"><%= FeuxHelper::ICONES.fetch(indicateur["couleur"]) %></span>
-                  <span class="text-gray-700"><%= indicateur["libelle"] %></span>
-                  <span class="sr-only">: <%= indicateur["couleur"] %></span>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        <% else %>
-          <p class="text-sm text-gray-500">Feu finances non encore calculé.</p>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
+      <div class="space-y-1">
+        <%= form.label :domaine, "Domaine", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.select :domaine,
+              options_for_select([ [ "Tous les domaines", "" ] ] +
+                CommunesController::DOMAINES.map { |d| [ libelle_domaine(d), d ] }, @domaine),
+              {}, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+
+      <div class="space-y-1">
+        <%= form.label :couleur, "Feu", class: "block text-sm font-medium text-gray-700" %>
+        <%= form.select :couleur,
+              options_for_select([ [ "Tous les feux", "" ] ] +
+                TrafficLight::COULEURS.map { |c| [ libelle_couleur(c), c ] }, @couleur),
+              {}, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+
+      <div class="flex gap-2">
+        <%= form.submit "Filtrer",
+              class: "rounded-md bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 cursor-pointer" %>
+        <%= link_to "Réinitialiser", root_path,
+              class: "rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" %>
+      </div>
+    </div>
+  <% end %>
+
+  <p class="text-sm text-gray-600" role="status" aria-live="polite">
+    <%= pluralize(@communes.size, "commune") %>
+    <% if @couleur || @domaine || @recherche.present? %>sur <%= Commune.count %><% end %>
+  </p>
+
+  <% if @communes.empty? %>
+    <p class="rounded-lg border border-dashed border-gray-300 p-8 text-center text-gray-500">
+      Aucune commune ne correspond à ces critères.
+    </p>
+  <% else %>
+    <ul role="list" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <%= render partial: "carte", collection: @communes, as: :commune %>
+    </ul>
+  <% end %>
 </div>

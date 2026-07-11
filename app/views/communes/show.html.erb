@@ -1,0 +1,40 @@
+<% content_for :title, "#{@commune.nom} — Communoscope" %>
+
+<div class="w-full max-w-3xl space-y-10">
+  <nav class="text-sm">
+    <%= link_to "← Retour à la liste des communes", root_path, class: "text-blue-700 underline" %>
+  </nav>
+
+  <header class="space-y-1">
+    <h1 class="text-2xl font-bold"><%= @commune.nom %></h1>
+    <div class="text-sm text-gray-600">
+      <% if @commune.population %>
+        <span><%= number_with_delimiter(@commune.population, delimiter: " ") %> habitants</span>
+        <span aria-hidden="true"> · </span>
+      <% end %>
+      <span>Code INSEE <%= @commune.code_insee %></span>
+    </div>
+  </header>
+
+  <%= render "finances/fiche_section", commune: @commune %>
+  <%= render "eau/fiche_section", commune: @commune %>
+
+  <section id="historique" class="space-y-4">
+    <h2 class="text-lg font-semibold">Historique des feux</h2>
+
+    <% if @historique.any? %>
+      <ol class="space-y-2">
+        <% @historique.each do |feu| %>
+          <li data-historique data-couleur="<%= feu.couleur %>"
+              class="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-gray-200 p-3 text-sm">
+            <span class="font-medium text-gray-700"><%= libelle_domaine(feu.domaine) %></span>
+            <%= badge_feu_carte(feu.couleur) %>
+            <span class="text-gray-500">au <%= feu.date.strftime("%d/%m/%Y") %></span>
+          </li>
+        <% end %>
+      </ol>
+    <% else %>
+      <p class="text-sm text-gray-600">Aucun feu enregistré pour le moment.</p>
+    <% end %>
+  </section>
+</div>
