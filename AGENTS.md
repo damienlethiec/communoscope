@@ -76,7 +76,7 @@ affichés : ajouter un domaine à cette constante le fait apparaître partout
   commune. Feux préchargés par domaine via `TrafficLight.derniers_par_commune`
   (une requête par domaine, jamais un `feu()` par carte). Filtres couleur +
   domaine et recherche par nom, tous en query params (`?couleur=&domaine=&q=`),
-  filtrage en Ruby sur les ~59 communes (recherche insensible aux accents via
+  filtrage en Ruby sur les 58 communes (recherche insensible aux accents via
   `I18n.transliterate`). Partial de carte : `communes/_carte.html.erb`.
 - **Fiche** (`communes#show`, route `/communes/:code_insee`) : réutilise les
   partials `_fiche_section` de chaque domaine + historique des `traffic_lights`
